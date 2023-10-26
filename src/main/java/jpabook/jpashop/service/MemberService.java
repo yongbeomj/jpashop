@@ -2,7 +2,7 @@ package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,10 +12,10 @@ import java.util.List;
 // 해당 서비스의 경우 조회 메서드가 많으므로 readOnly = true 옵션을 전체 클래스에 부여하고 수정 필요한 부분만 false 옵션을 별도 적용
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor // final 변수만 생성자 만듦
 public class MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 회원 가입
