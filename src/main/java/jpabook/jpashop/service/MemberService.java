@@ -45,4 +45,12 @@ public class MemberService {
     public Member findOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }
+
+    // 회원 수정
+    // public Member update(){} 로 반환하는 것 보다 void나 id만 반환하는 것이 더 낫다
+    @Transactional
+    public void update(Long id, String name) {
+        Member member = memberRepository.findOne(id);
+        member.setName(name);
+    }
 }
