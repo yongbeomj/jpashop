@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
 
     // 쿼리 파라미터 로그 남기기
     // 개발 단계에서만 사용 권장. 운영 단계에서는 병목 현상으로 성능 저하 가능성 있음.
