@@ -6,6 +6,8 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderQueryDto;
+import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     // 양방향 연관관계 무한루프를 끊기 위해 한 쪽에 @JsonIgnore 추가 필요
     // 엔티티를 직접 노출하므로 좋은 방법이 아님
@@ -73,6 +76,14 @@ public class OrderApiController {
 
         return result;
     }
+
+    // 만약 OrderQueryDto가 아니라 OrderDto를 참조한다면?
+    // repository가 controller를 참조하는 순환 참조가 발생
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> ordersV4() {
+        return orderQueryRepository.findOrderQueryDtos();
+    }
+
 
     @Data
     static class OrderDto {
