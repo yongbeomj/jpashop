@@ -39,11 +39,25 @@ public class OrderApiController {
     @GetMapping("/api/v2/orders")
     public List<OrderDto> ordersV2() {
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
-        List<OrderDto> collect = orders.stream()
+        List<OrderDto> result = orders.stream()
                 .map(o -> new OrderDto(o))
                 .collect(Collectors.toList());
 
-        return collect;
+        return result;
+    }
+
+    // query 10번에서 1번 나가는 것으로 성능 튜닝
+    // 단점 : 페이징 처리 불가 ex) 일단 데이터 10000개를 메모리에 모두 가져와서 페이징 > outofmemory 가능성
+    // 1:N의 경우 order가 아니라 orderitem 기준으로 페이지 개수 기준이 됨
+    // 컬렉션 페치 조인은 2개 이상 사용하지 말 것
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllWithItem();
+        List<OrderDto> result = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
     }
 
     @Data
@@ -54,9 +68,7 @@ public class OrderApiController {
         private LocalDateTime orderDate;
         private OrderStatus orderStatus;
         private Address address;
-        // orderitem 엔티티가 그대로 노출되므로 좋은 방법이 아님
-        // orderitem도 dto로 변환
-        private List<OrderItem> orderItems;
+        private List<OrderItemDto> orderItems;
 
         public OrderDto(Order order) {
             orderId = order.getId();
@@ -64,8 +76,23 @@ public class OrderApiController {
             orderDate = order.getOrderDate();
             orderStatus = order.getStatus();
             address = order.getDelivery().getAddress();
-            order.getOrderItems().stream().forEach(o -> o.getItem().getName());
-            orderItems = order.getOrderItems();
+            orderItems = order.getOrderItems().stream()
+                    .map(orderItem -> new OrderItemDto(orderItem))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Data
+    static class OrderItemDto {
+
+        private String itemName; // 상품명
+        private int orderPrice; // 주문 가격
+        private int count; // 주문 수량
+
+        public OrderItemDto(OrderItem orderItem) {
+            itemName = orderItem.getItem().getName();
+            orderPrice = orderItem.getOrderPrice();
+            count = orderItem.getCount();
         }
     }
 }
