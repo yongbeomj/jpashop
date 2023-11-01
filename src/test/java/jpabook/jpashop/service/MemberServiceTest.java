@@ -2,6 +2,7 @@ package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
+import jpabook.jpashop.repository.MemberRepositoryOld;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class MemberServiceTest {
     @Autowired
     MemberService memberService;
     @Autowired
-    MemberRepository memberRepository;
+    MemberRepositoryOld memberRepositoryOld;
     @Autowired
     EntityManager em;
 
@@ -41,7 +42,7 @@ public class MemberServiceTest {
         // db에 테스트 데이터가 남으면 안되므로 rollback 하여 로그에 insert문은 안보임
         // 만약 쿼리를 보고 싶다면 flush() 이용하여 확인
         // em.flush();
-        assertEquals(member, memberRepository.findOne(savedId));
+        assertEquals(member, memberRepositoryOld.findOne(savedId));
 
     }
 
