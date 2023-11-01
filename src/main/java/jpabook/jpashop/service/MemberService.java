@@ -43,14 +43,15 @@ public class MemberService {
 
     // 회원 단건 조회
     public Member findOne(Long memberId) {
-        return memberRepository.findOne(memberId);
+        return memberRepository.findById(memberId).get();
+        // JpaRepository 에서는 기본적으로 Optional 타입으로 제공
     }
 
     // 회원 수정
     // public Member update(){} 로 반환하는 것 보다 void나 id만 반환하는 것이 더 낫다
     @Transactional
     public void update(Long id, String name) {
-        Member member = memberRepository.findOne(id);
+        Member member = memberRepository.findById(id).get();
         member.setName(name);
     }
 }
